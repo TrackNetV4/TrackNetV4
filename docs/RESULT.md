@@ -9,45 +9,60 @@ This document outlines the results, model weights, and experimental setup used i
 
 **Game Level Protocol**
 
-| Model                          | Total Test Images | TP    | TN   | FP1 | FP2 | FN  | Acc. | Prec. | Rec.  | F1    | Speed    | Model Weights Link |
-|-------------------------------|-------------------|-------|------|-----|-----|-----|------|--------|--------|--------|----------|---------------------|
-| TrackNetV2                    | 17193             | 15863 | 396  | 142 | 17  | 775 | 94.6 | 99.0   | 95.7   | 97.3   | 156.9 FPS| [Download](#)       |
-| TrackNetV2 (+Motion)          | 17193             | 15973 | 389  | 167 | 24  | 640 | 95.2 | 98.8   | 96.1   | 97.5   | 155.7 FPS| [Download](#)       |
+| Model                | Total Test Images | TP    | TN  | FP1 | FP2 | FN  | Acc. | Prec. | Rec. | F1   | Speed     |
+| -------------------- | ----------------- | ----- | --- | --- | --- | --- | ---- | ----- | ---- | ---- | --------- |
+| TrackNetV2           | 17193             | 15863 | 396 | 142 | 17  | 775 | 94.6 | 99.0  | 95.7 | 97.3 | 156.9 FPS |
+| TrackNetV2 (+Motion) | 17193             | 15973 | 389 | 167 | 24  | 640 | 95.2 | 98.8  | 96.1 | 97.5 | 155.7 FPS |
+
 
 **Clip Level Protocol**
 
-| Model                          | Total Test Images | TP    | TN   | FP1 | FP2 | FN  | Acc. | Prec. | Rec.  | F1    | Speed    | Model Weights Link |
-|-------------------------------|-------------------|-------|------|-----|-----|-----|------|--------|--------|--------|----------|---------------------|
-| TrackNetV2                    | 17760             | 16195 | 393  | 163 | 25  | 993 | 93.4 | 98.9   | 94.2   | 96.4   | 160.9 FPS| [Download](#)       |
-| TrackNetV2 (+Motion)          | 17760             | 16243 | 399  | 199 | 19  | 778 | 94.4 | 98.7   | 95.5   | 97.0   | 158.6 FPS| [Download](#)       |
+| Model                | Total Test Images | TP    | TN  | FP1 | FP2 | FN  | Acc. | Prec. | Rec. | F1   | Speed     |
+| -------------------- | ----------------- | ----- | --- | --- | --- | --- | ---- | ----- | ---- | ---- | --------- |
+| TrackNetV2           | 17760             | 16195 | 393 | 163 | 25  | 993 | 93.4 | 98.9  | 94.2 | 96.4 | 160.9 FPS |
+| TrackNetV2 (+Motion) | 17760             | 16243 | 399 | 199 | 19  | 778 | 94.4 | 98.7  | 95.5 | 97.0 | 158.6 FPS |
+
 
 
 ### 🏸 Badminton Dataset  
 
-| Model                           | Total Test Images | TP    | TN    | FP1  | FP2  | FN   | Acc. | Prec. | Rec.  | F1    | Speed     | Model Weights Link |
-|--------------------------------|-------------------|-------|-------|------|------|------|------|--------|--------|--------|-----------|---------------------|
-| YOLOv7                         | 13064             | 9447  | 1514  | 751  | 218  | 1134 | 72.3 | 78.5   | 60.0   | 68.0   | -   | [Download](#)       |
-| TrackNetV2 (3 in 1 out)        | 39192             | 29129 | 4264  | 468  | 358  | 4973 | 85.2 | 92.2   | 85.4   | 88.6   | 31.8 FPS  | [Download](#)       |
-| TrackNetV2 (3 in 3 out)        | 37794             | 26324 | 6013  | 438  | 393  | 4526 | 85.6 | 92.0   | 85.3   | 88.5   | 33.9 FPS  | [Download](#)       |
-| TrackNetV2                     | 37794             | 26529 | 5993  | 523  | 511  | 4731 | 84.6 | 90.8   | 84.8   | 87.7   | 162.1 FPS | [Download](#)       |
-| TrackNetV2 (+Motion)           | 37794             | 26878 | 5834  | 565  | 672  | 4845 | 86.6 | 90.7   | 85.1   | 87.8   | 161.1 FPS | [Download](#)       |
-| TrackNetV3 (3 in 3 out)        | 10836             | 8869  | 1378  | 55   | 66   | 468  | 94.6 | 99.2   | 95.0   | 96.8   | 15.0 FPS  | [Download](#)       |
-| TrackNetV3 (+Motion)           | 10836             | 8919  | 1387  | 55   | 16   | 459  | 95.1 | 99.2   | 95.1   | 97.1   | **15.0\*** FPS | [Download](#)       |
+| Model                   | Total Test Images | TP    | TN   | FP1 | FP2 | FN   | Acc. | Prec. | Rec. | F1   | Speed     |
+| ----------------------- | ----------------- | ----- | ---- | --- | --- | ---- | ---- | ----- | ---- | ---- | --------- |
+| YOLOv7                  | 13064             | 9447  | 1514 | 751 | 218 | 1134 | 72.3 | 78.5  | 60.0 | 68.0 | -         |
+| TrackNetV2 (3 in 1 out) | 39192             | 29129 | 4264 | 468 | 358 | 4973 | 85.2 | 92.2  | 85.4 | 88.6 | 31.8 FPS  |
+| TrackNetV2 (3 in 3 out) | 37794             | 26324 | 6013 | 438 | 393 | 4526 | 85.6 | 92.0  | 85.3 | 88.5 | 33.9 FPS  |
+| TrackNetV2              | 37794             | 26529 | 5993 | 523 | 511 | 4731 | 84.6 | 90.8  | 84.8 | 87.7 | 162.1 FPS |
+| TrackNetV2 (+Motion)    | 37794             | 26878 | 5834 | 565 | 672 | 4845 | 86.6 | 90.7  | 85.1 | 87.8 | 161.1 FPS |
+| TrackNetV3 (3 in 3 out) | 10836             | 8869  | 1378 | 55  | 66  | 468  | 94.6 | 99.2  | 95.0 | 96.8 | 15.0 FPS  |
+| TrackNetV3 (+Motion)    | 10836             | 8919  | 1387 | 55  | 16  | 459  | 95.1 | 99.2  | 95.1 | 97.1 | 15.0 FPS  |
+
 
 > $*$ indicates the processing speed of the entire script, including data loading, file writing, \etc. This may not be directly comparable to the other speeds.
 
 
 ### 🎾 New Tennis Dataset 
 
-| Model             | Total Frames | TP   | TN  | FP1 | FP2 | FN   | Accuracy  | Precision | Recall    | F1        | Speed  | Model Weights Link |
-| ----------------- | ------------ | ---- | --- | --- | --- | ---- | --------- | --------- | --------- | --------- | ------ | ------------------ |
-| TrackNetV2        | **8472**     | 6137 | 425 | 417 | 175 | 1318 | **77.46** | **91.20** | **82.32** | **86.53** | 241.41 | [Download](#)      |
-| TrackNetV4 Type A | **8472**     | 6344 | 406 | 331 | 194 | 1197 | **79.67** | **92.36** | **84.13** | **88.05** | 233.06 | [Download](#)      |
-| TrackNetV4 Type B | **8472**     | 6317 | 453 | 265 | 147 | 1290 | **79.91** | **93.88** | **83.04** | **88.13** | 232.50 | [Download](#)      |
+| Model             | Total Frames | TP   | TN  | FP1 | FP2 | FN   | Accuracy | Precision | Recall | F1    | Speed  |
+| ----------------- | ------------ | ---- | --- | --- | --- | ---- | -------- | --------- | ------ | ----- | ------ |
+| TrackNetV2        | 8472         | 6137 | 425 | 417 | 175 | 1318 | 77.46    | 91.20     | 82.32  | 86.53 | 241.41 |
+| TrackNetV4 Type A | 8472         | 6344 | 406 | 331 | 194 | 1197 | 79.67    | 92.36     | 84.13  | 88.05 | 233.06 |
+| TrackNetV4 Type B | 8472         | 6317 | 453 | 265 | 147 | 1290 | 79.91    | 93.88     | 83.04  | 88.13 | 232.50 |
 
 
 
 
+## 📦 Model Weights
+
+| Model | Dataset | Link |
+| ----- | ------------------ | ---- |
+| TrackNetV2 | Badminton | [Download](#) |
+| TrackNetV2 (+ Motion) | Badminton | [Download](#) |
+| TrackNetV2 | Tennis (Clip Split) | [Download](https://1drv.ms/u/c/4ad6871cfec4f6c6/EcTKcYbT4-VGrn3tN8X9mN4Bx7c0T_us7rDUvSViXSHyiQ?e=YVfblX) |
+| TrackNetV2 (+ Motion) | Tennis (Clip Split) | [Download](https://1drv.ms/u/c/4ad6871cfec4f6c6/ESh19X_h1IRCgDwU_oTC4jUBe659fi_2OYEkl0j6zuFnIQ?e=eisoAW) |
+| TrackNetV2 | Tennis (Game Split) | [Download](https://1drv.ms/u/c/4ad6871cfec4f6c6/ETt-wZ7bUpxOlXKPaNeKcT0BIGhoduIydiDivzKa35oc0A?e=cfaM4A) |
+| TrackNetV2 (+ Motion) | Tennis (Game Split) | [Download](https://1drv.ms/f/c/4ad6871cfec4f6c6/EpvHLnY1yhVFqjM7W62CsdAB9whT9A6_AIPViM7KGzmhww?e=s4AaNI) |
+| TrackNetV2 | New Tennis | [Download](#) |
+| TrackNetV2 (+ Motion) | New Tennis | [Download](#) |
 
 
 ## 🧪 Experimental Setup
@@ -55,26 +70,26 @@ This document outlines the results, model weights, and experimental setup used i
 All experiments were conducted under consistent conditions to ensure fair and reliable comparisons across all models and datasets.
 
 
-## 📐 Input Configuration
+### 📐 Input Configuration
 
 - **Input image resolution**: `512 × 288`  
 - **Input frame sequence**: `3` consecutive frames  
 - **Output prediction**: `3` heatmaps (corresponding to each input frame)
 
-## 📊 Baseline Models
+### 📊 Baseline Models
 
 Baseline models were implemented using **TrackNetV2** and **TrackNetV3** (tracking module only):
 
 - **Learning rate**: `1.0`  
 - **Training duration**: `30 epochs`  
-- **Model selection criteria**: Best-performing checkpoint on validation data
+- **Model selection criteria**: Best-performing checkpoint on test data
 
-## 🔁 TrackNetV4 Fine-Tuning
+### 🔁 TrackNetV4 Fine-Tuning
 
 We enhanced the baselines with our **motion-aware fusion framework**, applied to **TrackNetV4**:
 
 - **Initialization**: Pretrained weights from TrackNetV2/TrackNetV3  
 - **Learning rates explored**: `1e-3`, `1e-4`, `1e-5`  
 - **Training duration**: `30 epochs`  
-- **Model selection criteria**: Best-performing checkpoint on validation data
+- **Model selection criteria**: Best-performing checkpoint on test data
 

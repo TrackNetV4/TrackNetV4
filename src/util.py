@@ -5,11 +5,13 @@ Utility functions for dataset generation, training utilities, and model/dataset 
 import math
 import numpy as np
 import cv2
+import h5py
 import tensorflow.keras.backend as K
+from tensorflow.keras.models import load_model
 
 from constants import BADMINTON_DATASET_ROOT, TENNIS_DATASET_ROOT, NEW_TENNIS_DATASET_ROOT, WIDTH, HEIGHT
 from models.TrackNetV2 import TrackNetV2
-from models.TrackNetV4New import TrackNetV4
+from models.TrackNetV4 import TrackNetV4
 
 ####################################
 # Dataset related helper functions #
@@ -96,18 +98,67 @@ def custom_loss(y_true, y_pred):
 # Model/dataset related functions #
 ###################################
 
-def get_model(model_name, height, width):
+
+def get_model(model_name, height, width, model_path=None):
     """
-    Retrieve an instance of a TrackNet model based on the specified model name.
+    Instantiate and optionally load a TrackNet model.
+
+    Args:
+        model_name (str): Name of the model to instantiate.
+        height (int): Input frame height.
+        width (int): Input frame width.
+        model_path (str, optional): Path to the saved model or weights file.
+
+    Returns:
+        keras.Model: Instantiated and optionally preloaded model.
     """
+    # Instantiate the specified model
     if model_name == "Baseline_TrackNetV2":
-        return TrackNetV2(height, width)
+        model = TrackNetV2(height, width)
     elif model_name == "TrackNetV4_TypeA":
-        return TrackNetV4(height, width, "TypeA")
+        model = TrackNetV4(height, width, "TypeA")
     elif model_name == "TrackNetV4_TypeB":
-        return TrackNetV4(height, width, "TypeB")
+        model = TrackNetV4(height, width, "TypeB")
     else:
-        raise ValueError("Unknown model name")
+        raise ValueError(f"Unknown model name: {model_name}")
+
+    # Return if no model path is provided
+    if not model_path:
+        return model
+
+    # Define custom objects required to load the model
+    custom_objects = {
+        'custom_loss': custom_loss,
+        'MotionPromptLayer': MotionPromptLayer,
+        'FusionLayerTypeA': FusionLayerTypeA,
+        'FusionLayerTypeB': FusionLayerTypeB,
+    }
+    
+    loaded_weights_by_name = {}
+
+    if model_path.endswith('.keras'):
+        temp_model = load_model(model_path, custom_objects=custom_objects)
+        loaded_weights_by_name = {layer.name: layer for layer in temp_model.layers}
+    elif model_path.endswith('.weights.h5'):
+        with h5py.File(model_path, 'r') as f:
+            for layer_name in f.keys():
+                layer = f[layer_name]
+                for weight_name in layer.keys():
+                    weight_values = layer[weight_name][()]
+                    loaded_weights_by_name[f"{layer_name}/{weight_name}"] = weight_values
+
+    # Assign weights to corresponding layers
+    for layer in model.layers:
+        if layer.name in loaded_weights_by_name:
+            try:
+                layer.set_weights(loaded_weights_by_name[layer.name].get_weights())
+                print(f"Loaded weights for layer: {layer.name}")
+            except ValueError:
+                print(f"Shape mismatch: skipped layer {layer.name}")
+        else:
+            print(f"No matching weights found for: {layer.name}")
+
+    return model
 
 def get_dataset(dataset_name, mode, height=HEIGHT, width=WIDTH):
     """

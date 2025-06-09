@@ -13,13 +13,15 @@ Usage:
 
 Example:
     python src/eval.py --model_path ./models/model_final.keras \
-        --dataset tennis_game_level_split --batch_size 2 --tol 4
+        --dataset tennis_game_level_split --batch_size 1 --tol 4
 
 Arguments:
-    --model_path   : Path to the model file (.keras) to load before evaluation.
+    --model_name   : Name of the model to use.
+                     Allowed values: Baseline_TrackNetV2, TrackNetV4_TypeA, TrackNetV4_TypeB.
+    --model_path   : Path to the model file to load before evaluation.
     --dataset      : Name of the dataset to use.
                      Allowed values: tennis_game_level_split, tennis_clip_level_split, badminton, new_tennis.
-    --batch_size   : Batch size for evaluation (default: 2).
+    --batch_size   : Batch size for evaluation (default: 1).
     --tol          : Tolerance value for evaluation metric calculation (default: 4).
     --result_dir   : Directory to save the evaluation results JSON file (default: "./").
 
@@ -34,7 +36,8 @@ import time
 import argparse
 from tensorflow.keras.models import load_model
 
-from util import custom_loss, outcome, get_dataset
+from util import custom_loss, outcome, get_dataset, get_model
+from constants import HEIGHT, WIDTH
 from models.TrackNetV4 import (
     MotionPromptLayer,
     FusionLayerTypeA,
@@ -42,12 +45,13 @@ from models.TrackNetV4 import (
 )
 
 
-def evaluate_model(model_path, dataset, batch_size, tol, result_dir):
+def evaluate_model(model_name, model_path, dataset, batch_size, tol, result_dir):
     """
     Evaluates the specified TrackNet model on a test dataset.
 
     Parameters:
-        model_path (str): Path to a pretrained model (.keras) to load before training.
+        model_name (str): Name of the model to use.
+        model_path (str): Path to a pretrained model to load before training.
         dataset (str): Name of the dataset to evaluate.
         batch_size (int): Batch size used during evaluation.
         tol (int): Tolerance value for outcome calculation.
@@ -73,17 +77,8 @@ def evaluate_model(model_path, dataset, batch_size, tol, result_dir):
     # Load the test dataset
     test_dataset = get_dataset(dataset, "test")
 
-    # Define custom objects required for loading the model
-    custom_objects = {
-        'custom_loss': custom_loss,
-        # Following for TrackNetV4
-        'MotionPromptLayer': MotionPromptLayer,
-        'FusionLayerTypeA': FusionLayerTypeA,
-        'FusionLayerTypeB': FusionLayerTypeB,
-    }
-
-    # Load the model with provided weights and custom objects
-    model = load_model(model_path, custom_objects=custom_objects)
+    # Load model
+    model = get_model(model_name, HEIGHT, WIDTH, model_path)
 
     # Initialize counters for timing and evaluation metrics
     total_time_taken = 0
@@ -184,6 +179,13 @@ if __name__ == "__main__":
         description="Evaluate a TrackNet model with provided weights and dataset."
     )
     parser.add_argument(
+        '--model_name',
+        type=str,
+        required=True,
+        choices=['Baseline_TrackNetV2', 'TrackNetV4_TypeA', 'TrackNetV4_TypeB'],
+        help="Name of the model to use."
+    )
+    parser.add_argument(
         '--model_path',
         type=str,
         required=True,
@@ -199,8 +201,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '--batch_size',
         type=int,
-        default=2,
-        help="Batch size for evaluation. Default is 2."
+        default=1,
+        help="Batch size for evaluation. Default is 1."
     )
     parser.add_argument(
         '--tol',

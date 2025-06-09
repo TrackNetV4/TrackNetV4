@@ -10,9 +10,9 @@
 
 This repository contains the official TensorFlow implementation of our ICASSP 2025 paper: **TrackNetV4: Enhancing Fast Sports Object Tracking with Motion Attention Maps**.
 
-We provide TensorFlow code demonstrating our Motion-Aware Fusion framework, integrated with TrackNetV2, for training, testing, and visual prediction of sports object trajectories. Our implementation supports three datasets: tennis, badminton, and newly introduced badminton dataset. Additionally, we provide model code for integrating the framework with TrackNetV3.
+We provide TensorFlow code demonstrating our Motion-Aware Fusion framework, integrated with TrackNetV2, for training, testing, and visual prediction of sports object trajectories. Our implementation supports three datasets: tennis, badminton, and newly introduced badminton dataset.
 
-Additionally, feel free to explore the project website for more visualizations, dataset details, and experimental results.
+Additionally, feel free to explore the project website for more details.
 
 ## Visualizations
 
@@ -28,7 +28,7 @@ Additionally, feel free to explore the project website for more visualizations, 
 ### 📥 1. Clone the Repository
 
 ```bash
-git clone https://github.com/AR4152/TrackNetV4.git
+git clone https://github.com/TrackNetV4/TrackNetV4.git
 cd TrackNetV4
 ```
 
@@ -68,7 +68,7 @@ python src/train.py --model_name <MODEL> --dataset <DATASET> [options]
 ```bash
 python src/train.py --model_name Baseline_TrackNetV2 \
     --dataset tennis_game_level_split \
-    --batch_size 2 \
+    --batch_size 3 \
     --learning_rate 1.0 \
     --height 288 \
     --width 512 \
@@ -123,7 +123,7 @@ python src/eval.py --model_path <MODEL_PATH> --dataset <DATASET> [options]
 ```bash
 python src/eval.py --model_path ./models/model_final.keras \
     --dataset tennis_game_level_split \
-    --batch_size 2 \
+    --batch_size 1 \
     --tol 4 \
     --result_dir ./results
 ```

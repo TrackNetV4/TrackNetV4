@@ -11,7 +11,7 @@ Usage:
 
 Example:
     python src/train.py --model_name Baseline_TrackNetV2 --dataset tennis_game_level_split \
-        --batch_size 2 --learning_rate 1.0 --height 288 --width 512 --epochs 30 --tol 4 \
+        --batch_size 3 --learning_rate 1.0 --height 288 --width 512 --epochs 30 --tol 4 \
         --work_dir ./models --save_freq 1
 
 Arguments:
@@ -19,7 +19,7 @@ Arguments:
                      Allowed values: Baseline_TrackNetV2, TrackNetV4_TypeA, TrackNetV4_TypeB.
     --dataset      : Name of the dataset to use.
                      Allowed values: tennis_game_level_split, tennis_clip_level_split, badminton, new_tennis.
-    --batch_size   : Batch size for training (default: 2).
+    --batch_size   : Batch size for training (default: 3).
     --learning_rate: Learning rate for the optimizer (default: 1.0).
     --height       : Target image height (default: 288).
     --width        : Target image width (default: 512).
@@ -36,8 +36,6 @@ Note:
 import argparse
 import datetime
 import os
-import io
-import tempfile
 
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adadelta
@@ -93,28 +91,8 @@ def main(args):
     # Create the work directory if it doesn't exist
     os.makedirs(work_dir, exist_ok=True)
 
-    # Load model architecture
+    # Load model
     model = get_model(model_name, height, width)
-
-    # Optionally load pretrained weights
-    if model_path:
-        custom_objects = {
-            'custom_loss': custom_loss,
-            # Following for TrackNetV4
-            'MotionPromptLayer': MotionPromptLayer,
-            'FusionLayerTypeA': FusionLayerTypeA,
-            'FusionLayerTypeB': FusionLayerTypeB,
-        }
-        # This block ensures model weights can be loaded even if there are architectural differences 
-        # (i.e. additional layers like fusion layers) between the saved model and the current one.
-        # By saving weights from the loaded model and then reloading them into the current model 
-        # using `skip_mismatch=True`, it avoids errors caused by shape or structure mismatches.
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_model = load_model(model_path, custom_objects=custom_objects)
-            model_temp_path = os.path.join(temp_dir, "temp_weights.weights.h5")
-            temp_model.save_weights(model_temp_path)
-            model.load_weights(model_temp_path, skip_mismatch=True)
-
 
     # Load training dataset
     dataset_train = get_dataset(dataset_name, "train")
@@ -135,22 +113,23 @@ def main(args):
             model.fit(x_train, y_train, batch_size=batch_size, epochs=1)
             del x_train, y_train
 
-        # Evaluate model performance on the training set
-        TP = TN = FP1 = FP2 = FN = 0
-        for x_train, y_train in dataset_train:
-            y_pred = model.predict(x_train, batch_size=batch_size)
-            y_pred = (y_pred > 0.5).astype('float32')
+        # Evaluate model performance on the training set (if enabled)
+        if not args.disable_eval_on_train:
+            TP = TN = FP1 = FP2 = FN = 0
+            for x_train, y_train in dataset_train:
+                y_pred = model.predict(x_train, batch_size=batch_size)
+                y_pred = (y_pred > 0.5).astype('float32')
 
-            tp, tn, fp1, fp2, fn = outcome(y_pred, y_train, tol)
-            TP += tp
-            TN += tn
-            FP1 += fp1
-            FP2 += fp2
-            FN += fn
+                tp, tn, fp1, fp2, fn = outcome(y_pred, y_train, tol)
+                TP += tp
+                TN += tn
+                FP1 += fp1
+                FP2 += fp2
+                FN += fn
 
-            del x_train, y_train, y_pred
+                del x_train, y_train, y_pred
 
-        print(f"Epoch {epoch + 1} results: TP={TP}, TN={TN}, FP1={FP1}, FP2={FP2}, FN={FN}")
+            print(f"Epoch {epoch + 1} results: TP={TP}, TN={TN}, FP1={FP1}, FP2={FP2}, FN={FN}")
 
         # Save model checkpoint based on frequency
         if (epoch + 1) % save_freq == 0:
@@ -182,7 +161,7 @@ if __name__ == "__main__":
         choices=['tennis_game_level_split', 'tennis_clip_level_split', 'badminton', 'new_tennis'],
         help="Name of the dataset to use."
     )
-    parser.add_argument("--batch_size", type=int, default=2, help="Batch size for training")
+    parser.add_argument("--batch_size", type=int, default=3, help="Batch size for training")
     parser.add_argument("--learning_rate", type=float, default=1.0, help="Learning rate for the optimizer")
     parser.add_argument("--height", type=int, default=288, help="Target height of the images")
     parser.add_argument("--width", type=int, default=512, help="Target width of the images")
@@ -195,6 +174,11 @@ if __name__ == "__main__":
     )
     parser.add_argument("--work_dir", type=str, default="./models", help="Directory to save the trained models")
     parser.add_argument("--save_freq", type=int, default=1, help="Frequency (in epochs) to save model checkpoints")
+    parser.add_argument(
+        "--disable_eval_on_train",
+        action="store_true",
+        help="If set, disables evaluations on the model on the training set after each epoch"
+    )
     
     args = parser.parse_args()
     main(args)

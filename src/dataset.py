@@ -87,6 +87,16 @@ class BaseDataset():
         for i in indices:
             yield self._getitem(i)
 
+    def iter_custom(self, indices):
+        """
+        Generator to iterate over dataset samples.
+        """
+        if not self._is_processed():
+            print("Dataset not processed yet. Please run the `process_data` method first.")
+            return
+
+        for i in indices:
+            yield self._getitem(i)
 
 class BadmintonDataset(BaseDataset):
     def __init__(self, root_dir, mode, target_img_height=HEIGHT, target_img_width=WIDTH, sequence_dim=(3,3), mag=MAG, sigma=SIGMA, shuffle=True):
@@ -191,10 +201,12 @@ class BadmintonDataset(BaseDataset):
                     for j in range(self.sequence_dim[0]):
                         frame_filename = f"{frames_numbers[i + j]}.png"
                         frame_path = os.path.join(rally_path, frame_filename)
-                        img = load_img(frame_path, target_size=(self.target_img_height, self.target_img_width))
-                        img_array = img_to_array(img)
-                        img_array = np.moveaxis(img_array, -1, 0)
-                        frames_sequence.extend([img_array[0], img_array[1], img_array[2]])
+                        
+                        img = load_img(frame_path)
+                        img = np.moveaxis(img_to_array(img.resize(size=(self.target_img_width, self.target_img_height))), -1, 0)
+                        frames_sequence.append(img[0])
+                        frames_sequence.append(img[1])
+                        frames_sequence.append(img[2])
                     x_data_list.append(np.stack(frames_sequence, axis=0))
 
                     # Process y data (generate heatmaps)
@@ -209,11 +221,8 @@ class BadmintonDataset(BaseDataset):
                     y_data_list.append(heatmap_sequence)
 
                 # Convert collected data to NumPy arrays.
-                x_data = np.asarray(x_data_list, dtype='float32') / 255.0
+                x_data = np.asarray(x_data_list, dtype='float32') / 255.0                
                 y_data = np.asarray(y_data_list)
-
-                print(x_data.shape)
-                print(y_data.shape)
 
                 # Save the processed data.
                 np.save(os.path.join(save_dir, f'x_data_{file_count}.npy'), x_data)
@@ -291,12 +300,12 @@ class TennisDataset(BaseDataset):
         print("Processing completed.")
 
     def _process_clip_level(self):
-        train_set, test_set = self.get_clip_level_split(TENNIS_DATASET_GAME_LEVEL_SPLIT_CSV)
+        train_set, test_set = self.get_clip_level_split(TENNIS_DATASET_CLIP_LEVEL_SPLIT_CSV)
         self._process_set(train_set, os.path.join(self.root_dir, "processed_data", "clip_level", "train"))
         self._process_set(test_set, os.path.join(self.root_dir, "processed_data", "clip_level", "test"))
 
     def _process_game_level(self):
-        train_games, test_games = self.get_game_level_split(TENNIS_DATASET_CLIP_LEVEL_SPLIT_CSV)
+        train_games, test_games = self.get_game_level_split(TENNIS_DATASET_GAME_LEVEL_SPLIT_CSV)
         self._process_set(train_games, os.path.join(self.root_dir, "processed_data", "game_level", "train"), use_clip_list=False)
         self._process_set(test_games, os.path.join(self.root_dir, "processed_data", "game_level", "test"), use_clip_list=False)
 
@@ -317,7 +326,7 @@ class TennisDataset(BaseDataset):
                 game_folder = os.path.join(self.root_dir, "Dataset", game)
                 for clip in clips:
                     clip_folder = os.path.join(game_folder, clip)
-                    print(f"Processing game: {game}, clip: {clip}")
+                    print(f"Processing game: {game}, clip: {clip}", flush=True)
                     x_data, y_data = self._process_clip(clip_folder)
                     self._save_data(save_data_dir, count, x_data, y_data)
                     count += 1
@@ -329,7 +338,7 @@ class TennisDataset(BaseDataset):
                 clips = [d for d in os.listdir(game_folder) if os.path.isdir(os.path.join(game_folder, d))]
                 for clip in clips:
                     clip_folder = os.path.join(game_folder, clip)
-                    print(f"Processing game: {game}, clip: {clip}")
+                    print(f"Processing game: {game}, clip: {clip}", flush=True)
                     x_data, y_data = self._process_clip(clip_folder)
                     self._save_data(save_data_dir, count, x_data, y_data)
                     count += 1
@@ -363,10 +372,12 @@ class TennisDataset(BaseDataset):
             frames_sequence = []
             for j in range(self.sequence_dim[0]):
                 frame_path = os.path.join(clip_folder, str(file_names[i + j]))
-                img = load_img(frame_path, target_size=(self.target_img_height, self.target_img_width))
-                img_array = img_to_array(img)
-                img_array = np.moveaxis(img_array, -1, 0)
-                frames_sequence.extend([img_array[0], img_array[1], img_array[2]])
+                        
+                img = load_img(frame_path)
+                img = np.moveaxis(img_to_array(img.resize(size=(self.target_img_width, self.target_img_height))), -1, 0)
+                frames_sequence.append(img[0])
+                frames_sequence.append(img[1])
+                frames_sequence.append(img[2])
             x_data_list.append(np.stack(frames_sequence, axis=0))
 
             # Process y data (generate heatmaps)
@@ -397,4 +408,3 @@ class TennisDataset(BaseDataset):
 class NewTennisDataset(BaseDataset):
     def process_data(self):
         pass
-
