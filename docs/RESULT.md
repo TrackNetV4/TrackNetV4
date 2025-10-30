@@ -41,9 +41,9 @@ This document outlines the results, model weights, and experimental setup used i
 
 | Model             | Total Frames | TP   | TN  | FP1 | FP2 | FN   | Accuracy  | Precision | Recall    | F1        | Speed  | Model Weights Link |
 | ----------------- | ------------ | ---- | --- | --- | --- | ---- | --------- | --------- | --------- | --------- | ------ | ------------------ |
-| TrackNetV2        | **8472**     | 6137 | 425 | 417 | 175 | 1318 | **77.46** | **91.20** | **82.32** | **86.53** | 241.41 | [Download](#)      |
-| TrackNetV4 Type A | **8472**     | 6344 | 406 | 331 | 194 | 1197 | **79.67** | **92.36** | **84.13** | **88.05** | 233.06 | [Download](#)      |
-| TrackNetV4 Type B | **8472**     | 6317 | 453 | 265 | 147 | 1290 | **79.91** | **93.88** | **83.04** | **88.13** | 232.50 | [Download](#)      |
+| TrackNetV2        | **8472**     | 6137 | 425 | 417 | 175 | 1318 | **77.46** | **91.20** | **82.32** | **86.53** | 241.41 | [Download](https://drive.google.com/drive/folders/1x2wl7V69dJy8LJvx8WAXURCz7pK46rGW?usp=sharing)      |
+| TrackNetV4 Type A | **8472**     | 6344 | 406 | 331 | 194 | 1197 | **79.67** | **92.36** | **84.13** | **88.05** | 233.06 | [Download](https://drive.google.com/drive/folders/1x2wl7V69dJy8LJvx8WAXURCz7pK46rGW?usp=sharing)      |
+| TrackNetV4 Type B | **8472**     | 6317 | 453 | 265 | 147 | 1290 | **79.91** | **93.88** | **83.04** | **88.13** | 232.50 | [Download](https://drive.google.com/drive/folders/1x2wl7V69dJy8LJvx8WAXURCz7pK46rGW?usp=sharing)      |
 
 
 
